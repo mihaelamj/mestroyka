@@ -80,3 +80,6 @@
 # directory next to the executable. The file is per-developer state.
 Packages/db.sqlite
 Packages/db.sqlite-*
+
+# Xcode-build derived data (used to compile the MLX metallib)
+.xcode-dd/

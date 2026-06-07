@@ -37,15 +37,31 @@ not.
 
 ## Status
 
-Early scaffold. The package layout, license, and direction are in place; the
-agent loop, tool surface, and MLX wiring are the next steps. Not yet usable.
+Early, but it runs. The kernel is in place: the decision cycle (ReAct loop with
+a step bound), tool dispatch with tool-call repair, an approval gate for
+irreversible tools, declarative memory (ACT-R activation), progressive-disclosure
+skills, and an MLX-backed model provider. A local model answers end-to-end.
 
-## Build
+## Run a model
 
 ```sh
 cd Packages
-swift build          # resolves MLX and builds the library + `mestroyka` CLI
-swift run mestroyka  # (stub for now)
+# Build with Xcode's build system so the MLX Metal library (default.metallib) is
+# compiled. Plain `swift build` does not produce it, so GPU inference fails.
+xcodebuild -scheme mestroyka -destination 'platform=macOS,arch=arm64' \
+  -derivedDataPath .xcode-dd -skipMacroValidation build
+
+# Run the built binary. The model downloads on first use, cached under
+# ~/.cache/huggingface.
+.xcode-dd/Build/Products/Debug/mestroyka \
+  --model mlx-community/Qwen2.5-0.5B-Instruct-4bit \
+  "In one short sentence, introduce yourself."
+```
+
+```sh
+# The library + tests build and run with plain SwiftPM (no model needed):
+swift build
+swift test
 ```
 
 ## License
