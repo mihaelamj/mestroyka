@@ -9,6 +9,9 @@ public extension Mestroyka {
         /// The assistant finished its turn normally and requested no further action.
         case endTurn
 
+        /// The assistant paused to run tools; the loop should dispatch them and continue.
+        case toolUse
+
         /// The provider failed to produce a turn.
         /// - Parameters:
         ///   - reason: What went wrong, in plain language.

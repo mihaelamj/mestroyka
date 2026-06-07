@@ -10,5 +10,8 @@ public extension Mestroyka {
 
         /// A completed assistant turn.
         case assistant(AssistantMessage)
+
+        /// The result of running a tool, fed back to the oracle.
+        case toolResult(name: String, content: String)
     }
 }

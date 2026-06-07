@@ -28,6 +28,8 @@ public extension Mestroyka {
                 value
             case let .assistant(assistant):
                 assistant.text
+            case let .toolResult(_, content):
+                content
             }
             let textTokens = (Double(text.count) / proseCharactersPerToken).rounded(.up)
             return Int(textTokens) + perMessageOverheadTokens

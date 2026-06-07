@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Multi-turn tool dispatch in `AgentLoop`: the full ReAct loop (run the tools the
+  oracle asks for, feed results back, repeat) bounded by a step cap (Floyd 1967).
+  `Tool` protocol, `ToolCall` / `ToolResult`, and a `Message.toolResult` case.
+  Tool calls leaked as text are recovered via `ToolCallRepair` against the
+  registered tool names; an unregistered tool yields an error result, not a crash.
+
 - The kernel seam and the first literature-grounded algorithms, all pure Swift
   and fully tested (no model required yet):
   - `Mestroyka.Message` / `AssistantMessage` / `AssistantEvent` / `StopReason`:
