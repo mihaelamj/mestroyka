@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Mestroyka.Skill`: progressive-disclosure capability cards (the inert text-only
+  skill model of OpenClaw; procedural-memory library of Voyager, Wang 2023).
+  Parses a `SKILL.md` (frontmatter `name`/`description` + body); the catalog
+  prompt carries only names and descriptions, so the body costs no tokens until a
+  task matches and the model reads it. No executable code, safe by construction.
 - Trust gate: a `Tool.isIrreversible` flag and an `Approver` seam (reference
   monitor, Anderson 1972). The loop consults the approver before running an
   irreversible tool, so tainted model output cannot reach an irreversible action
