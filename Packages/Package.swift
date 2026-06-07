@@ -8,29 +8,34 @@ let package = Package(
     ],
     products: [
         .library(name: "Mestroyka", targets: ["Mestroyka"]),
+        .library(name: "MestroykaMLX", targets: ["MestroykaMLX"]),
         .executable(name: "mestroyka", targets: ["MestroykaCLI"]),
     ],
     dependencies: [
-        // On-device array / NN compute on Apple Silicon via Apple's MLX.
-        // The LLM model + tokenizer layer is built on top of this core
-        // (architecture code can be vendored from mlx-swift-examples' Libraries
-        // or swift-transformers) as the agent loop lands.
-        .package(url: "https://github.com/ml-explore/mlx-swift", .upToNextMinor(from: "0.31.3")),
+        // On-device LLM inference on Apple Silicon. Brings mlx-swift transitively.
+        .package(url: "https://github.com/ml-explore/mlx-swift-lm", .upToNextMinor(from: "3.31.3")),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
-        // Agent / tool plumbing (MCP) is provided by the sibling packages and
-        // wired in once the core loop lands:
+        // Agent / tool plumbing (MCP) lands later:
         //   https://github.com/mihaelamj/SwiftMCPServer
-        //   https://github.com/mihaelamj/SwiftMCPCore
     ],
     targets: [
+        // ---------- Core ----------
+        // Pure-Swift kernel: no MLX, no heavy deps. Fast to build and test.
         .target(
             name: "Mestroyka",
+        ),
+        // ---------- Apple-Silicon provider ----------
+        // The MLX model seam, isolated so the heavy MLX stack never compiles into
+        // the core library or its tests.
+        .target(
+            name: "MestroykaMLX",
             dependencies: [
-                .product(name: "MLX", package: "mlx-swift"),
-                .product(name: "MLXNN", package: "mlx-swift"),
-                .product(name: "MLXRandom", package: "mlx-swift"),
+                "Mestroyka",
+                .product(name: "MLXLLM", package: "mlx-swift-lm"),
+                .product(name: "MLXLMCommon", package: "mlx-swift-lm"),
             ],
         ),
+        // ---------- CLI ----------
         .executableTarget(
             name: "MestroykaCLI",
             dependencies: [
@@ -38,9 +43,14 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
         ),
+        // ---------- Tests ----------
         .testTarget(
             name: "MestroykaTests",
             dependencies: ["Mestroyka"],
+        ),
+        .testTarget(
+            name: "MestroykaMLXTests",
+            dependencies: ["MestroykaMLX"],
         ),
     ],
 )

@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `MestroykaMLX.MLXOracle`: the first real ``Oracle``, a local MLX language model
+  on Apple silicon via `mlx-swift-lm`. A loaded `ModelContainer` is injected; the
+  oracle maps the transcript to the model's chat format and streams the reply as
+  `AssistantEvent`s, never throwing (a generation error becomes a `.failed`
+  message). It drops straight into the existing `AgentLoop`. MLX lives in its own
+  `MestroykaMLX` target so the heavy stack never compiles into the pure core or
+  its tests; the unused mlx-swift core deps were removed from the core target.
 - `Mestroyka.Skill`: progressive-disclosure capability cards (the inert text-only
   skill model of OpenClaw; procedural-memory library of Voyager, Wang 2023).
   Parses a `SKILL.md` (frontmatter `name`/`description` + body); the catalog
