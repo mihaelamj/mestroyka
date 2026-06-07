@@ -12,7 +12,10 @@ struct MestroykaCommand: AsyncParsableCommand {
         version: Mestroyka.version,
     )
 
-    @Option(name: .shortAndLong, help: "Hugging Face model repo id (e.g. mlx-community/Qwen2.5-0.5B-Instruct-4bit).")
+    /// A small instruct model that downloads quickly; used when none is given.
+    static let defaultModel = "mlx-community/Qwen2.5-0.5B-Instruct-4bit"
+
+    @Option(name: .shortAndLong, help: "Hugging Face model repo id. Defaults to \(MestroykaCommand.defaultModel).")
     var model: String?
 
     @Flag(help: "Run on the CPU instead of the GPU (use if the Metal library is unavailable).")
@@ -28,20 +31,23 @@ struct MestroykaCommand: AsyncParsableCommand {
         if cpu {
             MLXOracle.useCPUDevice()
         }
-        guard let model else {
-            print("mestroyka \(Mestroyka.version). Pass --model <hf-repo> and a prompt to run a local model.")
-            return
+        let resolvedModel = model ?? Self.defaultModel
+        // The prompt comes from the argument, or from stdin when piped (the shape
+        // an agent host such as iRelay uses).
+        var promptText = prompt.joined(separator: " ")
+        if promptText.isEmpty {
+            let piped = FileHandle.standardInput.readDataToEndOfFile()
+            promptText = String(data: piped, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         }
-        let promptText = prompt.joined(separator: " ")
         guard !promptText.isEmpty else {
-            throw ValidationError("Provide a prompt, e.g. mestroyka --model \(model) \"hello\"")
+            throw ValidationError("Provide a prompt as an argument or on stdin.")
         }
         // Read-only tools are safe to expose in a non-interactive run; the shell
         // tool is irreversible and stays out of the default set.
         let tools: [any Tool] = [Mestroyka.FileReadTool()]
         let systemPrompt = Mestroyka.SystemPrompt.build(tools: tools)
-        log("Loading \(model) (downloads on first run, cached under ~/.cache/huggingface)...")
-        let oracle = try await MLXOracle.load(id: model, instructions: systemPrompt)
+        log("Loading \(resolvedModel) (downloads on first run, cached under ~/.cache/huggingface)...")
+        let oracle = try await MLXOracle.load(id: resolvedModel, instructions: systemPrompt)
         log("Thinking...")
         let loop = Mestroyka.AgentLoop(oracle: oracle, tools: tools)
         let transcript = await loop.run([.user(promptText)])
