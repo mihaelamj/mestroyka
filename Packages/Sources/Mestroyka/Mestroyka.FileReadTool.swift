@@ -7,6 +7,8 @@ public extension Mestroyka {
     struct FileReadTool: Tool {
         public let name = "read_file"
 
+        public let description = "Read a UTF-8 text file. Arguments: {\"path\": \"/some/file.txt\"}."
+
         public init() {}
 
         public func execute(argumentsJSON: String) async -> ToolResult {

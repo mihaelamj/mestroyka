@@ -8,6 +8,10 @@ public protocol Tool: Sendable {
     /// The name the oracle uses to call this tool. Must be unique within a loop.
     var name: String { get }
 
+    /// A one-line description, including the expected JSON arguments, shown to the
+    /// model so it knows when and how to call the tool.
+    var description: String { get }
+
     /// Whether running this tool changes or sends data in a way that is hard to
     /// undo. Irreversible tools are gated behind an ``Approver`` (a reference
     /// monitor, Anderson 1972): the model proposes, the host confirms.
@@ -23,5 +27,10 @@ public extension Tool {
     /// Tools are read-only by default; opt in to gating by overriding this.
     var isIrreversible: Bool {
         false
+    }
+
+    /// Tools have no description by default.
+    var description: String {
+        ""
     }
 }

@@ -33,10 +33,14 @@ struct MestroykaCommand: AsyncParsableCommand {
         guard !promptText.isEmpty else {
             throw ValidationError("Provide a prompt, e.g. mestroyka --model \(model) \"hello\"")
         }
+        // Read-only tools are safe to expose in a non-interactive run; the shell
+        // tool is irreversible and stays out of the default set.
+        let tools: [any Tool] = [Mestroyka.FileReadTool()]
+        let systemPrompt = Mestroyka.SystemPrompt.build(tools: tools)
         log("Loading \(model) (downloads on first run, cached under ~/.cache/huggingface)...")
-        let oracle = try await MLXOracle.load(id: model)
+        let oracle = try await MLXOracle.load(id: model, instructions: systemPrompt)
         log("Thinking...")
-        let loop = Mestroyka.AgentLoop(oracle: oracle)
+        let loop = Mestroyka.AgentLoop(oracle: oracle, tools: tools)
         let transcript = await loop.run([.user(promptText)])
         guard case let .assistant(assistant) = transcript.last else { return }
         switch assistant.stopReason {

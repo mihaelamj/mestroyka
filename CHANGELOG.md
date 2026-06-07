@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Mestroyka.SystemPrompt`: assembles the tool- and skill-aware system prompt (the
+  context-engine "assemble" step). Tools gain a `description`. The CLI now builds
+  the prompt from its registered tools and passes it to the model, so the model
+  knows it can emit `[tool:NAME] {json}` calls (recovered by ToolCallRepair). The
+  read-only `read_file` tool is registered by default; the irreversible shell tool
+  is held out of the non-interactive set.
 - Built-in tools: `Mestroyka.FileReadTool` (read a UTF-8 file; reversible) and
   `Mestroyka.ShellTool` (run `/bin/sh -c`; marked irreversible, so the loop routes
   it through the approval gate). Both parse JSON arguments and return errors as

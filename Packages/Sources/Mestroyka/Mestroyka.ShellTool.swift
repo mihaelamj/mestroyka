@@ -10,6 +10,8 @@ public extension Mestroyka {
     struct ShellTool: Tool {
         public let name = "shell"
 
+        public let description = "Run a shell command and return its output. Arguments: {\"command\": \"ls -la\"}."
+
         public var isIrreversible: Bool {
             true
         }
