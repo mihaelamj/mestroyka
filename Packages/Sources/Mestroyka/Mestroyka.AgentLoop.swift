@@ -44,7 +44,7 @@ public extension Mestroyka {
         /// `.failed` stop reason; hitting the step bound appends a `.failed` turn
         /// explaining the limit.
         @discardableResult
-        func run(_ messages: [Message]) async -> [Message] {
+        public func run(_ messages: [Message]) async -> [Message] {
             let allowed = Set(toolsByName.keys)
             var transcript = messages
             var step = 0

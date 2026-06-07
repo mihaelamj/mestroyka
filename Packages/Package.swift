@@ -14,6 +14,11 @@ let package = Package(
     dependencies: [
         // On-device LLM inference on Apple Silicon. Brings mlx-swift transitively.
         .package(url: "https://github.com/ml-explore/mlx-swift-lm", .upToNextMinor(from: "3.31.3")),
+        .package(url: "https://github.com/ml-explore/mlx-swift", .upToNextMinor(from: "0.31.3")),
+        // Hugging Face hub + tokenizers, used by the MLXHuggingFace macros to load
+        // models by repo id. mlx-swift-lm leaves these to the consumer.
+        .package(url: "https://github.com/huggingface/swift-huggingface", from: "0.9.0"),
+        .package(url: "https://github.com/huggingface/swift-transformers", from: "1.3.0"),
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
         // Agent / tool plumbing (MCP) lands later:
         //   https://github.com/mihaelamj/SwiftMCPServer
@@ -31,8 +36,12 @@ let package = Package(
             name: "MestroykaMLX",
             dependencies: [
                 "Mestroyka",
+                .product(name: "MLX", package: "mlx-swift"),
                 .product(name: "MLXLLM", package: "mlx-swift-lm"),
                 .product(name: "MLXLMCommon", package: "mlx-swift-lm"),
+                .product(name: "MLXHuggingFace", package: "mlx-swift-lm"),
+                .product(name: "HuggingFace", package: "swift-huggingface"),
+                .product(name: "Tokenizers", package: "swift-transformers"),
             ],
         ),
         // ---------- CLI ----------
@@ -40,6 +49,7 @@ let package = Package(
             name: "MestroykaCLI",
             dependencies: [
                 "Mestroyka",
+                "MestroykaMLX",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ],
         ),

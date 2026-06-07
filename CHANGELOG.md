@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `MLXOracle.load(id:)` and a `mestroyka --model <hf-repo> "<prompt>"` CLI: load a
+  model from the Hugging Face hub (via the MLXHuggingFace macros + swift-huggingface
+  + swift-transformers) and run the agent loop on it. A `--cpu` flag forces the CPU
+  backend. End-to-end wiring compiles and reaches MLX; live generation via plain
+  `swift run` is currently blocked by the known mlx-swift packaging issue where
+  `mlx.metallib` (the GPU shader library) is not produced by the SPM CLI build
+  (it builds under Xcode). To resolve before the next release.
 - `MestroykaMLX.MLXOracle`: the first real ``Oracle``, a local MLX language model
   on Apple silicon via `mlx-swift-lm`. A loaded `ModelContainer` is injected; the
   oracle maps the transcript to the model's chat format and streams the reply as
