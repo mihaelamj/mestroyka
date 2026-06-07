@@ -12,16 +12,24 @@ public extension Mestroyka {
     struct AgentLoop: Sendable {
         private let oracle: any Oracle
         private let toolsByName: [String: any Tool]
+        private let approver: any Approver
         private let maxSteps: Int
 
         /// Creates an agent loop.
         /// - Parameters:
         ///   - oracle: The model seam to drive. Injected for testability.
         ///   - tools: The tools the oracle may call. Later names win on collision.
+        ///   - approver: The gate consulted before an irreversible tool runs.
         ///   - maxSteps: The ranking-function bound on tool-using turns.
-        public init(oracle: any Oracle, tools: [any Tool] = [], maxSteps: Int = 16) {
+        public init(
+            oracle: any Oracle,
+            tools: [any Tool] = [],
+            approver: any Approver = Mestroyka.AllowAllApprover(),
+            maxSteps: Int = 16,
+        ) {
             precondition(maxSteps > 0, "maxSteps must be positive")
             self.oracle = oracle
+            self.approver = approver
             self.maxSteps = maxSteps
             var table: [String: any Tool] = [:]
             for tool in tools {
@@ -91,10 +99,14 @@ public extension Mestroyka {
             }
         }
 
-        /// Runs one call, returning an error result for an unregistered tool.
+        /// Runs one call, returning an error result for an unregistered tool or a
+        /// denied irreversible one.
         private func dispatch(_ call: ToolCall) async -> ToolResult {
             guard let tool = toolsByName[call.name] else {
                 return ToolResult(content: "Unknown tool: \(call.name)", isError: true)
+            }
+            if tool.isIrreversible, await !approver.approve(call) {
+                return ToolResult(content: "Denied by the approval policy: \(call.name)", isError: true)
             }
             return await tool.execute(argumentsJSON: call.argumentsJSON)
         }

@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Trust gate: a `Tool.isIrreversible` flag and an `Approver` seam (reference
+  monitor, Anderson 1972). The loop consults the approver before running an
+  irreversible tool, so tainted model output cannot reach an irreversible action
+  without the host's consent (Denning 1976; the untrusted-prover stance).
+  Reversible tools are never gated; the default `AllowAllApprover` permits all.
 - `Mestroyka.MemoryStore` (in-memory) + `MemoryItem`: declarative memory whose
   retrieval ranks candidates by min-max-normalized recency/frequency (ACT-R
   activation, Anderson-Schooler 1991), importance, and lexical relevance, the
