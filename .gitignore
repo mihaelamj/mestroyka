@@ -1,0 +1,10 @@
+.DS_Store
+.build/
+DerivedData/
+*.xcodeproj
+.swiftpm/
+Package.resolved
+*.profraw
+.env
+*.gguf
+*.safetensors
