@@ -7,6 +7,8 @@ excluded:
   - "*.generated"
   - ".build/**"
   - "Packages/.build/**" # build artifacts and dependencies
+  - "Packages/.xcode-dd/**" # xcodebuild derived data (dependency sources)
+  - "Packages/DerivedData/**" # xcodebuild default derived data
   - "Packages/.swiftpm/**"
   - "Packages/Tests/**" # tests may use force unwrapping
 opt_in_rules:

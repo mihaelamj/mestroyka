@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Built-in tools: `Mestroyka.FileReadTool` (read a UTF-8 file; reversible) and
+  `Mestroyka.ShellTool` (run `/bin/sh -c`; marked irreversible, so the loop routes
+  it through the approval gate). Both parse JSON arguments and return errors as
+  data, never throwing.
 - `MLXOracle.load(id:)` and a `mestroyka --model <hf-repo> "<prompt>"` CLI: load a
   model from the Hugging Face hub (via the MLXHuggingFace macros + swift-huggingface
   + swift-transformers) and run the agent loop on it. A `--cpu` flag forces the CPU
