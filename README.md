@@ -43,7 +43,8 @@ agent loop, tool surface, and MLX wiring are the next steps. Not yet usable.
 ## Build
 
 ```sh
-swift build       # resolves MLX and builds the library + `mestroyka` CLI
+cd Packages
+swift build          # resolves MLX and builds the library + `mestroyka` CLI
 swift run mestroyka  # (stub for now)
 ```
 

@@ -5,7 +5,7 @@ struct MestroykaCommand: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "mestroyka",
         abstract: "A private, on-device AI agent for Apple platforms.",
-        version: Mestroyka.version
+        version: Mestroyka.version,
     )
 
     func run() throws {

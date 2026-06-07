@@ -1,5 +1,5 @@
-import Testing
 @testable import Mestroyka
+import Testing
 
 @Suite("Mestroyka")
 struct MestroykaTests {

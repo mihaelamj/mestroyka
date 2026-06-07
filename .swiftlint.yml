@@ -1,0 +1,20 @@
+# Mechanical enforcement of the code rules a machine can decide
+# (engineering.md principle: no force-unwrap in shipping code).
+#
+# Inert until Swift sources exist. The CI workflow that runs swiftlint plus
+# build plus test ships with the engine package.
+excluded:
+  - "*.generated"
+  - ".build/**"
+  - "Packages/.build/**" # build artifacts and dependencies
+  - "Packages/.swiftpm/**"
+  - "Packages/Tests/**" # tests may use force unwrapping
+opt_in_rules:
+  - force_unwrapping
+force_unwrapping: error
+force_try: error
+force_cast: error
+# House style is always-trailing-commas (enforced by swiftformat); make
+# swiftlint require them too instead of forbidding them.
+trailing_comma:
+  mandatory_comma: true
