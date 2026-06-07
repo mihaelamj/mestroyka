@@ -18,7 +18,7 @@ public extension Mestroyka {
     /// where `tⱼ` is the age of the j-th use and `d` is the decay rate.
     enum Activation {
         /// The classic ACT-R decay rate.
-        static let defaultDecay = 0.5
+        public static let defaultDecay = 0.5
 
         /// Base-level activation `B = ln(Σ tⱼ^(−d))` over the ages of past uses.
         ///

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Mestroyka.MemoryStore` (in-memory) + `MemoryItem`: declarative memory whose
+  retrieval ranks candidates by min-max-normalized recency/frequency (ACT-R
+  activation, Anderson-Schooler 1991), importance, and lexical relevance, the
+  scheme of Generative Agents (Park 2023). Recall reinforces what it returns
+  (retrieval-as-reinforcement). The SQLite + vector implementation will sit behind
+  the same interface once an on-device embedding model lands.
 - Multi-turn tool dispatch in `AgentLoop`: the full ReAct loop (run the tools the
   oracle asks for, feed results back, repeat) bounded by a step cap (Floyd 1967).
   `Tool` protocol, `ToolCall` / `ToolResult`, and a `Message.toolResult` case.
