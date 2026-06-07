@@ -18,3 +18,18 @@ force_cast: error
 # swiftlint require them too instead of forbidding them.
 trailing_comma:
   mandatory_comma: true
+# Namespacing nests types under a root enum (Mestroyka.ToolCallRepair.Call),
+# so allow deeper nesting than the default of 1.
+nesting:
+  type_level:
+    warning: 3
+    error: 3
+  function_level:
+    warning: 5
+    error: 5
+# State machines (e.g. a balanced-brace scanner) are legitimately branchy; the
+# default of 10 is too strict. Match the house setting.
+cyclomatic_complexity:
+  ignores_case_statements: true
+  warning: 20
+  error: 20
