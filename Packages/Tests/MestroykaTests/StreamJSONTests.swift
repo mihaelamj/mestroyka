@@ -35,6 +35,29 @@ struct StreamJSONTests {
         #expect(decoded["arguments"] == "{\"path\":\"/x\"}")
     }
 
+    // The next two tests pin the exact wire bytes (sorted keys, no spaces) that
+    // iRelay's `CodexStreamParser` consumes. The same literals appear in iRelay's
+    // `MestroykaWireContractTests`; keep the two in lockstep so a format change
+    // here is caught on both sides of the cross-tool boundary.
+
+    @Test("message line is exactly the sorted-key Codex shape")
+    func messageExactBytes() {
+        #expect(
+            Mestroyka.StreamJSON.message("hello from on-device")
+                == #"{"content":"hello from on-device","type":"message"}"#,
+        )
+    }
+
+    @Test("function_call line is exactly the sorted-key Codex shape")
+    func functionCallExactBytes() {
+        // JSONSerialization escapes forward slashes as `\/` (valid JSON; a
+        // conformant decoder, including iRelay's, reads `\/` back as `/`).
+        #expect(
+            Mestroyka.StreamJSON.functionCall(name: "read_file", arguments: #"{"path":"/etc/hosts"}"#)
+                == #"{"arguments":"{\"path\":\"\/etc\/hosts\"}","name":"read_file","type":"function_call"}"#,
+        )
+    }
+
     @Test("a transcript becomes tool-call lines followed by the final message")
     func transcriptLines() {
         let transcript: [Mestroyka.Message] = [
