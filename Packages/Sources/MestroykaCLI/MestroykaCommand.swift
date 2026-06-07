@@ -21,9 +21,6 @@ struct MestroykaCommand: AsyncParsableCommand {
     @Flag(help: "Run on the CPU instead of the GPU (use if the Metal library is unavailable).")
     var cpu = false
 
-    @Flag(help: "Emit newline-delimited JSON for an agent host such as iRelay, instead of plain text.")
-    var json = false
-
     @Argument(parsing: .remaining, help: "The prompt to send to the model.")
     var prompt: [String] = []
 
@@ -51,12 +48,10 @@ struct MestroykaCommand: AsyncParsableCommand {
         log("Thinking...")
         let loop = Mestroyka.AgentLoop(oracle: oracle, tools: tools)
         let transcript = await loop.run([.user(promptText)])
-        if json {
-            for line in Mestroyka.StreamJSON.lines(for: transcript) {
-                print(line)
-            }
-            return
-        }
+        // mestroyka is a self-contained agent: it dispatches its own tools and
+        // returns the final assistant text. A host (such as iRelay's agent
+        // bridge) pipes the prompt in and reads this plain text back as the
+        // reply, so stdout carries only that text; status goes to stderr.
         guard case let .assistant(assistant) = transcript.last else { return }
         switch assistant.stopReason {
         case .endTurn, .toolUse:
