@@ -13,9 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   prompt argument is given, and prints the plain assistant text to stdout (status
   goes to stderr). An agent host such as iRelay's agent bridge spawns it as a
   subprocess, pipes a prompt in, and reads the reply straight back, exactly as it
-  drives `claude -p`. `--model` defaults to a small instruct model that downloads
-  on first run. mestroyka is self-contained (it dispatches its own tools and
-  returns final text), so no host-side parsing or structured output is needed.
+  drives `claude -p`. `--model` defaults to a capable 7B instruct model
+  (`Qwen2.5-7B-Instruct-4bit`) that downloads on first run; a smaller 0.5B was
+  tried but could not answer reliably or follow the tool-call format, so it
+  leaked raw tool syntax into the reply. Override with `--model` for a
+  smaller/faster model. mestroyka is self-contained (it dispatches its own tools
+  and returns final text), so no host-side parsing or structured output is needed.
 - `Mestroyka.SystemPrompt`: assembles the tool- and skill-aware system prompt (the
   context-engine "assemble" step). Tools gain a `description`. The CLI now builds
   the prompt from its registered tools and passes it to the model, so the model

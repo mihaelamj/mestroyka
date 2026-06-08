@@ -12,8 +12,12 @@ struct MestroykaCommand: AsyncParsableCommand {
         version: Mestroyka.version,
     )
 
-    /// A small instruct model that downloads quickly; used when none is given.
-    static let defaultModel = "mlx-community/Qwen2.5-0.5B-Instruct-4bit"
+    /// The default model when none is given. A capable instruct model: the
+    /// smaller 0.5B variant could not answer reliably or follow the tool-call
+    /// format (it leaked raw tool syntax into the reply), so the default is a
+    /// 7B that downloads on first run and is cached thereafter. Override with
+    /// `--model` for a smaller/faster model.
+    static let defaultModel = "mlx-community/Qwen2.5-7B-Instruct-4bit"
 
     @Option(name: .shortAndLong, help: "Hugging Face model repo id. Defaults to \(MestroykaCommand.defaultModel).")
     var model: String?
